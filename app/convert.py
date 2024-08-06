@@ -32,6 +32,7 @@ def parse_xml(xml_file: Path) -> Element:
 
 def extract_data(elem: Element) -> list:
     """XML要素から必要なデータを抽出します。"""
+    
     list_in = []
     namespaces = {'jp': 'http://www.jpo.go.jp'}
 
@@ -48,11 +49,11 @@ def extract_data(elem: Element) -> list:
     list_in.append(str(elem.findtext('.//number-of-claims'))) # 請求項の数
     list_in.append(str(elem.findtext('.//jp:total-pages', namespaces={'jp':'http://www.jpo.go.jp'}))) # 全頁数
     #FI ここはappendでスペース入れないとスペース入れてくれない
-    list_in.append("      ".join((elem.find('.//classification-national')).itertext()).replace('JP', '').strip().replace('\n', '')) if root.find('.//classification-national') != None else list_in.append('None')
+    list_in.append("      ".join((elem.find('.//classification-national')).itertext()).replace('JP', '').strip().replace('\n', '')) if elem.find('.//classification-national') != None else list_in.append('None')
     #テーマコード
-    list_in.append("".join((elem.find('.//jp:theme-code-info', namespaces={'jp': 'http://www.jpo.go.jp'}).itertext())).replace('\n', '').strip()) if root.find('.//jp:f-term-info', namespaces={'jp': 'http://www.jpo.go.jp'}) != None else list_in.append('None')
+    list_in.append("".join((elem.find('.//jp:theme-code-info', namespaces={'jp': 'http://www.jpo.go.jp'}).itertext())).replace('\n', '').strip()) if elem.find('.//jp:f-term-info', namespaces={'jp': 'http://www.jpo.go.jp'}) != None else list_in.append('None')
     # Fターム（一部Fタームの記載の無い公開特許公報（A) があるのでエラーを吐き出す. replaceメソッドで改行文字を削除している．よくわからないけどスペースが6つついている
-    list_in.append("".join((elem.find('.//jp:f-term-info', namespaces={'jp': 'http://www.jpo.go.jp'}).itertext())).replace('\n', '').strip()) if root.find('.//jp:f-term-info', namespaces={'jp': 'http://www.jpo.go.jp'}) != None else list_in.append('None')
+    list_in.append("".join((elem.find('.//jp:f-term-info', namespaces={'jp': 'http://www.jpo.go.jp'}).itertext())).replace('\n', '').strip()) if elem.find('.//jp:f-term-info', namespaces={'jp': 'http://www.jpo.go.jp'}) != None else list_in.append('None')
     # 出願人情報
     list_in.append(str(elem.findtext('.//parties/jp:applicants-agents-article/jp:applicants-agents[@sequence="1"]/applicant[@sequence="1"]/addressbook[@lang="ja"]/registered-number', namespaces={'jp':'http://www.jpo.go.jp'})))
     list_in.append(str(elem.findtext('.//parties/jp:applicants-agents-article/jp:applicants-agents[@sequence="1"]/applicant[@sequence="1"]/addressbook[@lang="ja"]/name', namespaces={'jp':'http://www.jpo.go.jp'})))
@@ -148,29 +149,29 @@ def extract_data(elem: Element) -> list:
     list_in.append(str(elem.findtext('.//parties/inventors/inventor[@sequence="12"]/addressbook/name')))
     list_in.append(str(elem.findtext('.//parties/inventors/inventor[@sequence="12"]/addressbook/address/text')))
     #要約【課題】＋【解決手段】＋【選択図】
-    list_in.append("    ".join((elem.find('.//abstract/p').itertext())).replace('\n', '').strip())  if root.find('.//abstract/p') != None else list_in.append('None')
+    list_in.append("    ".join((elem.find('.//abstract/p').itertext())).replace('\n', '').strip())  if elem.find('.//abstract/p') != None else list_in.append('None')
     # 請求項（すべて）
-    list_in.append("    ".join((elem.find('.//claims').itertext())).replace('\n', '').strip()) if root.find('.//claims') != None else list_in.append('None')
+    list_in.append("    ".join((elem.find('.//claims').itertext())).replace('\n', '').strip()) if elem.find('.//claims') != None else list_in.append('None')
     # 技術分野（すべて）
-    list_in.append("    ".join((elem.find('.//technical-field').itertext())).replace('\n', '').strip()) if root.find('.//technical-field') != None else list_in.append('None')
+    list_in.append("    ".join((elem.find('.//technical-field').itertext())).replace('\n', '').strip()) if elem.find('.//technical-field') != None else list_in.append('None')
     # 背景技術（すべて）
-    list_in.append("    ".join((elem.find('.//background-art').itertext())).replace('\n', '').strip()) if root.find('.//background-art') != None else list_in.append('None')
+    list_in.append("    ".join((elem.find('.//background-art').itertext())).replace('\n', '').strip()) if elem.find('.//background-art') != None else list_in.append('None')
     # 特許文献（すべて）
-    list_in.append("    ".join((elem.find('.//patent-literature').itertext())).replace('\n', '').strip()) if root.find('.//patent-literature') != None else list_in.append('None')
+    list_in.append("    ".join((elem.find('.//patent-literature').itertext())).replace('\n', '').strip()) if elem.find('.//patent-literature') != None else list_in.append('None')
     # 非特許文献（すべて）
-    list_in.append("    ".join((elem.find('.//non-patent-literature').itertext())).replace('\n', '').strip()) if root.find('.//non-patent-literature') != None else list_in.append('None')
+    list_in.append("    ".join((elem.find('.//non-patent-literature').itertext())).replace('\n', '').strip()) if elem.find('.//non-patent-literature') != None else list_in.append('None')
     # 発明が解決しようとする課題
-    list_in.append("    ".join((elem.find('.//tech-problem').itertext())).replace('\n', '').strip()) if root.find('.//tech-problem') != None else list_in.append('None')
+    list_in.append("    ".join((elem.find('.//tech-problem').itertext())).replace('\n', '').strip()) if elem.find('.//tech-problem') != None else list_in.append('None')
     # 発明を解決するための手段
-    list_in.append("    ".join((elem.find('.//tech-solution').itertext())).replace('\n', '').strip()) if root.find('.//tech-solution') != None else list_in.append('None')
+    list_in.append("    ".join((elem.find('.//tech-solution').itertext())).replace('\n', '').strip()) if elem.find('.//tech-solution') != None else list_in.append('None')
     # 発明の効果
-    list_in.append("    ".join((elem.find('.//advantageous-effects').itertext())).replace('\n', '').strip()) if root.find('.//advantageous-effects') != None else list_in.append('None')
+    list_in.append("    ".join((elem.find('.//advantageous-effects').itertext())).replace('\n', '').strip()) if elem.find('.//advantageous-effects') != None else list_in.append('None')
     # 発明を実施するための形態
-    list_in.append("    ".join((elem.find('.//description-of-embodiments').itertext())).replace('\n', '').strip().rstrip('\n')) if root.find('.//description-of-embodiments') != None else list_in.append('None')
+    list_in.append("    ".join((elem.find('.//description-of-embodiments').itertext())).replace('\n', '').strip().rstrip('\n')) if elem.find('.//description-of-embodiments') != None else list_in.append('None')
     # 産業利用上の可能性
-    list_in.append("    ".join((elem.find('.//industrial-applicability').itertext())).replace('\n', '').strip()) if root.find('.//industrial-applicability') != None else list_in.append('None')
+    list_in.append("    ".join((elem.find('.//industrial-applicability').itertext())).replace('\n', '').strip()) if elem.find('.//industrial-applicability') != None else list_in.append('None')
     # 図面の簡単な説明
-    list_in.append("    ".join((elem.find('.//description-of-drawings').itertext())).replace('\n', '').strip()) if root.find('.//description-of-drawings') != None else list_in.append('None')
+    list_in.append("    ".join((elem.find('.//description-of-drawings').itertext())).replace('\n', '').strip()) if elem.find('.//description-of-drawings') != None else list_in.append('None')
    
     return list_in
 
