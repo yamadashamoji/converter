@@ -202,7 +202,7 @@ def xml_to_csv(input_path: str, output_path: str):
                 judge_status = root.findtext('.//publication-reference/document-id/kind')
                 if judge_status in ["公開特許公報(A)", "公表特許公報(A)"]:
                     data = extract_data(root)
-                    csv_file = opt_path / f"{data[2]}.csv"  # data[2] は公開日
+                    csv_file = opt_path / f"{data[3]}.csv"  # data[3] は公開日
                     write_to_csv(data, csv_file)
             except Exception as e:
                 logging.error(f"ファイル '{xml_file.name}' の処理中にエラーが発生しました: {str(e)}")
